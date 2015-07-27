@@ -23,3 +23,13 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 # MA 02110-1301, USA.
 #
+
+import readcsv
+
+
+if __name__ == '__main__':
+
+    path2csv = "/Users/callumkift/dev_projects/"
+    csvfiles = readcsv.findcsvfiles(path2csv)
+
+    readcsv.readcsvfiles(csvfiles)
