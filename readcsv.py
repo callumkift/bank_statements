@@ -28,19 +28,36 @@ def findcsvfiles(path2files):
 
 
 def readcsvfiles(csvlist):
+    """
+    Reads CSV files and puts transaction data into a list
+    :param csvlist: list of transaction data
+    :return: csvlist
+    """
+    
+    csvdata = []
 
     if len(csvlist) != 0:
         for i in range(len(csvlist)):
             print csvlist[i]
-            extractdata(csvlist[i])
+            edl = extractdata(csvlist[i])
+
+            for i in range(len(edl)):
+                csvdata.append(edl[i])
+
+        return csvdata
     else:
         print "Error - readcsvfiles(csvlist): No CSV files in list. Are there CSV files in given directory?"
         return
 
 
 def extractdata(csvfile):
+    """
+    Extracts the data from the CSV file
+    :param csvfile: CSV file
+    :return: A list containing transaction data
+    """
 
-    csvdata = []
+    csvdata_pf = []
 
     if os.path.exists(csvfile):
         with open(csvfile, "r") as f:
@@ -50,11 +67,15 @@ def extractdata(csvfile):
                 line = line.strip()
                 column = line.split(";")
                 if len(column) == 5:
-                    csvdata.append([column[0], str(column[1]), column[2], float(string.replace(column[3], ",", ".")), float(string.replace(column[4], ",", "."))])
+                    csvdata_pf.append([column[0], str(column[1]), column[2], float(string.replace(column[3], ",", ".")), float(string.replace(column[4], ",", "."))])
+                    # column[0] date transaction was recorded
+                    # column[1] merchant information
+                    # column[2] date transaction cleared
+                    # column[3] transaction sum
+                    # column[4] balance of account
                 else:
                     print "Error - extractdata(csvfile): Wrong number of columns. Check file format."
-        print csvdata[0]
-        return
+        return csvdata_pf
     else:
         print "Error - extractdata(csvfile): Cannot find CSV file."
         return
