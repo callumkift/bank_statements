@@ -17,7 +17,7 @@ def findcsvfiles(path2files):
                 csvfiles.append(path2files + str(file))
 
         if len(csvfiles) != 0:
-            print "CSV files returned"
+            print "check - CSV files returned"
             return csvfiles
         else:
             print "Error - findcsvfiles(path2files): No CSV files found in given directory."
@@ -33,14 +33,15 @@ def readcsvfiles(csvlist):
     :param csvlist: list of transaction data
     :return: csvlist
     """
-    
+
     csvdata = []
 
     if len(csvlist) != 0:
         for i in range(len(csvlist)):
-            print csvlist[i]
+            print "check - ", csvlist[i]
             edl = extractdata(csvlist[i])
 
+            # puts csvdata into a list of transactions
             for i in range(len(edl)):
                 csvdata.append(edl[i])
 
@@ -75,6 +76,7 @@ def extractdata(csvfile):
                     # column[4] balance of account
                 else:
                     print "Error - extractdata(csvfile): Wrong number of columns. Check file format."
+        print "check - read and put in list"
         return csvdata_pf
     else:
         print "Error - extractdata(csvfile): Cannot find CSV file."
