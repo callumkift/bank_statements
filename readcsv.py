@@ -16,10 +16,20 @@ def findcsvfiles(path2files):
                 csvfiles.append(path2files + str(file))
 
         if len(csvfiles) != 0:
+            print "CSV files returned"
             return csvfiles
         else:
             print "Error: No CSV files found in given directory."
             return
     else:
         print "Error: Directory does not exist."
+        return
+
+def readcsvfiles(csvlist):
+
+    if len(csvlist) != 0:
+        for i in range(len(csvlist)):
+            print csvlist[i]
+    else:
+        print "Error: No CSV files in list. Are there CSV files in given directory?"
         return
