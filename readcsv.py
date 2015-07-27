@@ -3,6 +3,7 @@
 import os
 import string
 
+
 def findcsvfiles(path2files):
     """
     Method finds the CSV files to read and extract data.
@@ -42,8 +43,8 @@ def readcsvfiles(csvlist):
             edl = extractdata(csvlist[i])
 
             # puts csvdata into a list of transactions
-            for i in range(len(edl)):
-                csvdata.append(edl[i])
+            for j in range(len(edl)):
+                csvdata.append(edl[j])
 
         return csvdata
     else:

@@ -30,6 +30,7 @@ import readcsv
 if __name__ == '__main__':
 
     path2csv = "/Users/callumkift/dev_projects/"
-    csvfiles = readcsv.findcsvfiles(path2csv)
 
-    readcsv.readcsvfiles(csvfiles)
+    csvfiles = readcsv.findcsvfiles(path2csv)  # List of paths to CSV files
+    translist = readcsv.readcsvfiles(csvfiles)  # List of transactions from all CSV files
+    
