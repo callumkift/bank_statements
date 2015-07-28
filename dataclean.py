@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import datetime as dt
+import re
 
 def formatlist(form_list):
     """
@@ -16,6 +17,7 @@ def formatlist(form_list):
             res_elements.append(i)
         else:
             formatdate(form_list[i])
+            acttranstime(form_list[i])
 
     res_elements.reverse()
     # Reversed so that it deletes the correct elements
@@ -42,6 +44,17 @@ def formatdate(trans_element):
 
     return trans_element
 
+
+def acttranstime(trans_element):
+
+    tet = trans_element[1]
+    # ft = tet("den %d.%d kl. %d%d")
+    # stf = re.compile(r"den\s\d{2}\.\d{2}\.\skl\.\s\d{2}\.\d{2}", re.IGNORECASE)
+    # ft = stf.match(tet)
+    ft = re.findall(r"\w{3}\s\d{2}\.\d{2}\.\s\w{2}\.\s\d{2}\.\d{2}", tet, re.I)
+    print tet
+    print ft, "\n"
+    return
 
 
 def cleanlist():
