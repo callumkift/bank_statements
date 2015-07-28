@@ -2,34 +2,29 @@
 import datetime as dt
 
 def formatlist(form_list):
-
-    rem_res(form_list)
-
-    return form_list
-
-
-def rem_res(res_list):
     """
-    Removes transactions from list that have not gone through - they are reserved.
-    :param res_list: A list of transactions.
-    :return: The transaction list with reserved payments removed.
+    Formats and cleans up the transactions data.
+    :param form_list: A list of transactions.
+    :return: The transaction list with cleaned up data.
     """
 
     res_elements = []
 
-    for i in range(len(res_list)):
-        if res_list[i][0] == "Reserveret":
+    for i in range(len(form_list)):
+        # Identifies reserved transactions
+        if form_list[i][0] == "Reserveret":
             res_elements.append(i)
         else:
-            formatdate(res_list[i])
+            formatdate(form_list[i])
 
     res_elements.reverse()
     # Reversed so that it deletes the correct elements
 
+    # Removes reserved transactions
     for j in range(len(res_elements)):
-        del res_list[res_elements[j]]
+        del form_list[res_elements[j]]
 
-    return res_list
+    return form_list
 
 
 def formatdate(trans_element):
