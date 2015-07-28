@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import datetime as dt
 import re
+import string
 
 def formatlist(form_list):
     """
@@ -39,24 +40,57 @@ def formatdate(trans_element):
     date1 = trans_element[0].split("-")
     date2 = trans_element[2].split("-")
 
-    trans_element[0] = dt.date(int(date1[2]), int(date1[1]), int(date1[0]))
-    trans_element[2] = dt.date(int(date2[2]), int(date2[1]), int(date2[0]))
+    trans_element[0] = dt.datetime(int(date1[2]), int(date1[1]), int(date1[0]))
+    trans_element[2] = dt.datetime(int(date2[2]), int(date2[1]), int(date2[0]))
 
     return trans_element
 
 
 def acttranstime(trans_element):
+    """
+    In the transaction description is the true transaction datetime. This is removed from the description
+    and added as a new element to the transaction. If the true datetime does not exist, then the recorded
+    transaction time is the added element. 
+    is added.
+    :param trans_element: Individual transaction
+    :return: Individual transaction with added true transaction datetime
+    """
+    pte = filter(lambda x: x in string.printable, trans_element[1])
 
-    tet = trans_element[1]
-    # ft = tet("den %d.%d kl. %d%d")
-    # stf = re.compile(r"den\s\d{2}\.\d{2}\.\skl\.\s\d{2}\.\d{2}", re.IGNORECASE)
-    # ft = stf.match(tet)
-    ft = re.findall(r"\w{3}\s\d{2}\.\d{2}\.\s\w{2}\.\s\d{2}\.\d{2}", tet, re.I)
-    print tet
-    print ft, "\n"
-    return
+    ft = re.findall(r"\w{3}\s\d{2}\.\d{2}.*\w{2}\.\s\d{2}\.\d{2}", pte)
+    if len(ft) == 0:
+        ft = re.findall(r"\w{3}\s\d{2}\.\d{2}", pte)
+
+    if ft:
+        att = ft[0]
+        pte = pte.replace(att, "")
+        trans_element.append(format_att(att, trans_element[0]))
+    else:
+        trans_element.append(trans_element[0])
+
+    trans_element[1] = pte
+
+    return trans_element
 
 
-def cleanlist():
+def format_att(unformat_dt, rec_dt):
+    """
+    Formats the true datetime of the transaction from string.
+    :param unformat_dt: String with the unformated datetime and extra characters.
+    :param rec_dt: Datetime of recorded transaction
+    :return: True datetime of transaction.
+    """
+    year = rec_dt.year
+    fd = re.findall(r"\d{2}", unformat_dt)
+
+    if len(fd) == 2:
+        return dt.datetime(year, int(fd[1]), int(fd[0]))
+    elif len(fd) == 4:
+        return dt.datetime(year, int(fd[1]), int(fd[0]), int(fd[2]), int(fd[3]))
+    else:
+        return rec_dt
+
+
+def cleandescription():
 
     return
