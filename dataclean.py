@@ -3,6 +3,7 @@ import datetime as dt
 import re
 import string
 
+
 def formatlist(form_list):
     """
     Formats and cleans up the transactions data.
@@ -50,11 +51,12 @@ def acttranstime(trans_element):
     """
     In the transaction description is the true transaction datetime. This is removed from the description
     and added as a new element to the transaction. If the true datetime does not exist, then the recorded
-    transaction time is the added element. 
+    transaction time is the added element.
     is added.
     :param trans_element: Individual transaction
     :return: Individual transaction with added true transaction datetime
     """
+
     pte = filter(lambda x: x in string.printable, trans_element[1])
 
     ft = re.findall(r"\w{3}\s\d{2}\.\d{2}.*\w{2}\.\s\d{2}\.\d{2}", pte)
@@ -80,17 +82,19 @@ def format_att(unformat_dt, rec_dt):
     :param rec_dt: Datetime of recorded transaction
     :return: True datetime of transaction.
     """
+
     year = rec_dt.year
     fd = re.findall(r"\d{2}", unformat_dt)
 
     if len(fd) == 2:
+        # If only date is included
         return dt.datetime(year, int(fd[1]), int(fd[0]))
     elif len(fd) == 4:
+        # If time is also included
         return dt.datetime(year, int(fd[1]), int(fd[0]), int(fd[2]), int(fd[3]))
     else:
         return rec_dt
 
 
 def cleandescription():
-
     return

@@ -10,6 +10,7 @@ def findcsvfiles(path2files):
     :param path2files: Path to directory that contains CSV files
     :return: A list of CSV files to read.
     """
+
     csvfiles = []
 
     if os.path.isdir(path2files):
@@ -69,7 +70,8 @@ def extractdata(csvfile):
                 line = line.strip()
                 column = line.split(";")
                 if len(column) == 5:
-                    csvdata_pf.append([column[0], str(column[1]), column[2], float(string.replace(column[3], ",", ".")), float(string.replace(column[4], ",", "."))])
+                    csvdata_pf.append([column[0], column[1], column[2], float(string.replace(column[3], ",", ".")),
+                                       float(string.replace(column[4], ",", "."))])
                     # column[0] date transaction was recorded
                     # column[1] merchant information
                     # column[2] date transaction cleared
