@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Contains methods that deal with the CSV files and extracting data from it.
+"""
 
 import os
 import string

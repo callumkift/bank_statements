@@ -28,13 +28,9 @@ import readcsv
 import dataclean
 
 if __name__ == '__main__':
-
     path2csv = "/Users/callumkift/dev_projects/"
 
     csvfiles = readcsv.findcsvfiles(path2csv)  # List of paths to CSV files
     translist = readcsv.readcsvfiles(csvfiles)  # List of transactions from all CSV files
 
-    cleanlist = dataclean.formatlist(translist)
-
-    for i in range(10):
-        print cleanlist[i]
+    cleanlist = dataclean.formatlist(translist)  # Cleans up the transaction data
