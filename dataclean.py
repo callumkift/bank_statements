@@ -1,4 +1,8 @@
 #!/usr/bin/env python
+"""
+Contains methods that deal with the cleaning of the data from the CSV files.
+"""
+
 import datetime as dt
 import re
 import string
@@ -12,14 +16,16 @@ def formatlist(form_list):
     """
 
     res_elements = []
+    reserved = "Reserveret"
 
     for i in range(len(form_list)):
         # Identifies reserved transactions
-        if form_list[i][0] == "Reserveret":
+        if form_list[i][0] == reserved:
             res_elements.append(i)
         else:
             formatdate(form_list[i])
             acttranstime(form_list[i])
+            cleandescription(form_list[i])
 
     res_elements.reverse()
     # Reversed so that it deletes the correct elements
@@ -59,9 +65,9 @@ def acttranstime(trans_element):
 
     pte = filter(lambda x: x in string.printable, trans_element[1])
 
-    ft = re.findall(r"\w{3}\s\d{2}\.\d{2}.*\w{2}\.\s\d{2}\.\d{2}", pte)
+    ft = re.findall(r"\w{3}\s\d{2}\.\d{2}.{1,2}\w{2}\.\s\d{2}\.\d{2}.*", pte)
     if len(ft) == 0:
-        ft = re.findall(r"\w{3}\s\d{2}\.\d{2}", pte)
+        ft = re.findall(r"\w{3}\s\d{2}\.\d{2}.*", pte)
 
     if ft:
         att = ft[0]
@@ -96,5 +102,26 @@ def format_att(unformat_dt, rec_dt):
         return rec_dt
 
 
-def cleandescription():
-    return
+def cleandescription(trans_element):
+    """
+    Cleans up the transaction description
+    :param trans_element: Individual transaction
+    :return: Cleaned up individual transaction
+    """
+    
+    trans_descr = trans_element[1].rstrip()
+    npk = "Nordea pay kb"
+    np = "Nordea pay"
+
+    if npk in trans_descr:
+        trans_descr = trans_descr.replace(npk, "")
+    if np in trans_descr:
+        trans_descr = trans_descr.replace(np, "")
+
+    trans_descr = re.sub(r"[\.\,]", "", trans_descr)
+
+    trans_descr = re.sub(r"\s+", " ", trans_descr)
+
+    trans_element[1] = trans_descr.strip()
+
+    return trans_element
