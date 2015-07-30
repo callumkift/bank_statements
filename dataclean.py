@@ -66,10 +66,13 @@ def acttranstime(trans_element):
     pte = filter(lambda x: x in string.printable, trans_element[1])
 
     ft = re.findall(r"\w{3}\s\d{2}\.\d{2}.{1,2}\w{2}\.\s\d{2}\.\d{2}.*", pte)
+    # finds 'Den dd.mm(.) kl. hh.mm
     if len(ft) == 0:
         ft = re.findall(r"\w{3}\s\d{2}\.\d{2}.*", pte)
+        # finds 'Den dd.mm
 
     if ft:
+        # Deletes date from description then adds actual date to transaction
         att = ft[0]
         pte = pte.replace(att, "")
         trans_element.append(format_att(att, trans_element[0]))
@@ -108,7 +111,7 @@ def cleandescription(trans_element):
     :param trans_element: Individual transaction
     :return: Cleaned up individual transaction
     """
-    
+
     trans_descr = trans_element[1].rstrip()
     npk = "Nordea pay kb"
     np = "Nordea pay"
@@ -118,9 +121,8 @@ def cleandescription(trans_element):
     if np in trans_descr:
         trans_descr = trans_descr.replace(np, "")
 
-    trans_descr = re.sub(r"[\.\,]", "", trans_descr)
-
-    trans_descr = re.sub(r"\s+", " ", trans_descr)
+    trans_descr = re.sub(r"[\.\,]", "", trans_descr)  # removes .,
+    trans_descr = re.sub(r"\s+", " ", trans_descr)  # removes additional whitespace
 
     trans_element[1] = trans_descr.strip()
 
