@@ -36,3 +36,29 @@ def createdb():
 
         print "check - db and tables created"
         return
+
+def add2db(trans_list):
+    """
+    Add info into db
+    :param trans_list: List of transaction data
+    :return:
+    """
+    nt = len(trans_list)
+
+    for i in range(1):
+        des = trans_list[i][1]
+        amo = trans_list[i][3]
+        bal = trans_list[i][4]
+        dt = trans_list[i][5]
+
+        print des
+        print amo
+        print bal
+        print dt
+
+
+
+
+
+
+    return
