@@ -32,10 +32,34 @@ def createdb():
         c.execute('''CREATE TABLE TransactionInfo(id INTEGER PRIMARY KEY, tt_id INTEGER, tp_id INTEGER, date TEXT,
                         amount REAL, balance REAL, FOREIGN KEY(tt_id) REFERENCES TransactionType(id),
                         FOREIGN KEY(tp_id) REFERENCES TransactionPlace(id))''')
+        conn.commit()
         conn.close()
 
         print "check - db and tables created"
+
+        add_default_tt(path2db)
+
         return
+
+
+def add_default_tt(db):
+    """
+    Adds default values into TransactionType table
+    :param db: Database to connect to
+    :return:
+    """
+    d_tt = ["Supermarket", "ATM", "Kiosk", "Shopping", "Night Out", "Transport", "Money In",
+            "House"]  # List of default transaction types
+    conn = sqlite3.connect(db)
+    c = conn.cursor()
+
+    for i in range(len(d_tt)):
+        c.execute("INSERT INTO TransactionType(type) VALUES(?)", (d_tt[i],))
+
+    conn.commit()
+    conn.close()
+    return
+
 
 def add2db(trans_list):
     """
@@ -51,14 +75,10 @@ def add2db(trans_list):
         bal = trans_list[i][4]
         dt = trans_list[i][5]
 
-        print des
-        print amo
-        print bal
-        print dt
-
-
-
-
-
+        # print ""
+        # print des
+        # print amo
+        # print bal
+        # print dt
 
     return
