@@ -89,6 +89,7 @@ def add2db(trans_list):
         bal = trans_list[i][4]
         dt = trans_list[i][5].isoformat()
 
+
         # Check if a similar transaction has happened before
         c.execute("SELECT * FROM TransactionPlace WHERE description = (?) LIMIT 1", (des,))
         tp_return = c.fetchall()
@@ -98,10 +99,10 @@ def add2db(trans_list):
             if amo > 0.0:
                 # Automatically designates Money In if amount is positive.
                 mi = "Money In"
-                print "\n%s" % mi
+
                 c.execute("SELECT id FROM TransactionType WHERE type = (?)", (mi,))
                 tt_id = c.fetchall()[0][0]
-                
+
                 # Adds transaction to database
                 c.execute("INSERT INTO TransactionPlace(tt_id, description) VALUES(?,?)", (tt_id, des,))
                 conn.commit()
@@ -110,14 +111,13 @@ def add2db(trans_list):
                 c.execute('''INSERT INTO TransactionInfo(tt_id, tp_id, date, amount, balance)
                                     VALUES(?,?,?,?,?)''', (tt_id, tp_id, dt, amo, bal,))
                 conn.commit()
-                print "Money In added"
             else:
                 print "\nNo description match for: %s, %.2f" % (des, amo)
                 # Need user to add transaction type
                 c.execute("SELECT * FROM TransactionType")
                 tt_in_db = c.fetchall()
 
-                print "System does not know what type of transaction this is. Here are the current types:"
+                print "System does not know what type of transaction this is. \nHere are the current types:"
                 for i in range(len(tt_in_db)):
                     print "%2d %s" % (tt_in_db[i][0], tt_in_db[i][1])
                 # User picks existing type of transaction or adds new type
@@ -135,7 +135,7 @@ def add2db(trans_list):
                         conn.commit()
                         c.execute("SELECT id FROM TransactionPlace WHERE id = (SELECT MAX(id) FROM TransactionPlace)")
                         tt_id = c.fetchall()[0][0]
-                        print "\nnew type\n"
+                        print "\nNew type added\n"
                         break
 
                 # Adds transaction to database
@@ -163,13 +163,11 @@ def add2db(trans_list):
             ti_return = c.fetchall()
 
             if len(ti_return) == 0:
-                # Adds transaction to database
+                # Adds transaction to database if it does not exist.
                 c.execute('''INSERT INTO TransactionInfo(tt_id, tp_id, date, amount, balance)
                                 VALUES(?,?,?,?,?)''', (tt_id, tp_id, dt, amo, bal,))
                 conn.commit()
-            else:
-                # Ignores transaction
-                print "Transaction already exists."
+
 
     conn.close()
 
