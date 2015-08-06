@@ -7,9 +7,10 @@ import sqlite3
 import os
 
 
-def createdb():
+def createdb(dtt):
     """
     Creates database and tables if the database does not exist.
+    :param dtt: List of default transaction types
     :return:
     """
     dbname = "TransactionDB.sqlite"
@@ -37,7 +38,7 @@ def createdb():
 
         print "check - db and tables created"
 
-        add_default_tt()
+        add_default_tt(dtt)
 
         return
 
@@ -54,19 +55,17 @@ def connect():
     return sqlite3.connect(path2db)
 
 
-def add_default_tt():
+def add_default_tt(dtt):
     """
     Adds default values into TransactionType table
-    :param db: Database to connect to
+    :param dtt: List of default transaction types
     :return:
     """
-    d_tt = ["Supermarket", "ATM", "Kiosk", "Shopping", "Night Out", "Transport", "Money In",
-            "House", "Misc"]  # List of default transaction types
     conn = connect()
     c = conn.cursor()
 
-    for i in range(len(d_tt)):
-        c.execute("INSERT INTO TransactionType(type) VALUES(?)", (d_tt[i],))
+    for i in range(len(dtt)):
+        c.execute("INSERT INTO TransactionType(type) VALUES(?)", (dtt[i],))
 
     conn.commit()
     conn.close()
@@ -84,7 +83,7 @@ def add2db(trans_list):
     conn = connect()
     c = conn.cursor()
 
-    for i in range(nt):
+    for i in range(20):
         des = trans_list[i][1]
         amo = trans_list[i][3]
         bal = trans_list[i][4]
@@ -96,40 +95,57 @@ def add2db(trans_list):
 
         if len(tp_return) == 0:
             # No similar transaction
-            print "\nNo description match for: %s" % des
-            # Need user to add transaction type
-            c.execute("SELECT * FROM TransactionType")
-            tt_in_db = c.fetchall()
+            if amo > 0.0:
+                # Automatically designates Money In if amount is positive.
+                mi = "Money In"
+                print "\n%s" % mi
+                c.execute("SELECT id FROM TransactionType WHERE type = (?)", (mi,))
+                tt_id = c.fetchall()[0][0]
+                
+                # Adds transaction to database
+                c.execute("INSERT INTO TransactionPlace(tt_id, description) VALUES(?,?)", (tt_id, des,))
+                conn.commit()
+                c.execute("SELECT id FROM TransactionPlace WHERE id = (SELECT MAX(id) FROM TransactionPlace)")
+                tp_id = c.fetchall()[0][0]
+                c.execute('''INSERT INTO TransactionInfo(tt_id, tp_id, date, amount, balance)
+                                    VALUES(?,?,?,?,?)''', (tt_id, tp_id, dt, amo, bal,))
+                conn.commit()
+                print "Money In added"
+            else:
+                print "\nNo description match for: %s, %.2f" % (des, amo)
+                # Need user to add transaction type
+                c.execute("SELECT * FROM TransactionType")
+                tt_in_db = c.fetchall()
 
-            print "System does not know what type of transaction this is. Here are the current types:"
-            for i in range(len(tt_in_db)):
-                print tt_in_db[i][0], tt_in_db[i][1]
-            # User picks existing type of transaction or adds new type
-            while True:
-                user_type = raw_input("\nPlease choose corresponding number or add new type name: ")
-                try:
-                    tt_num = int(user_type)
-                    if tt_num <= tt_in_db[-1][0] and tt_num > 0:
-                        tt_id = tt_num
+                print "System does not know what type of transaction this is. Here are the current types:"
+                for i in range(len(tt_in_db)):
+                    print "%2d %s" % (tt_in_db[i][0], tt_in_db[i][1])
+                # User picks existing type of transaction or adds new type
+                while True:
+                    user_type = raw_input("\nPlease choose corresponding number or add new type name: ")
+                    try:
+                        tt_num = int(user_type)
+                        if tt_num <= tt_in_db[-1][0] and tt_num > 0:
+                            tt_id = tt_num
+                            break
+                        else:
+                            print "Incorrect number input"
+                    except ValueError as e:
+                        c.execute("INSERT INTO TransactionType(type) VALUES(?)", (user_type,))
+                        conn.commit()
+                        c.execute("SELECT id FROM TransactionPlace WHERE id = (SELECT MAX(id) FROM TransactionPlace)")
+                        tt_id = c.fetchall()[0][0]
+                        print "\nnew type\n"
                         break
-                    else:
-                        print "Incorrect number input"
-                except ValueError as e:
-                    c.execute("INSERT INTO TransactionType(type) VALUES(?)", (user_type, ))
-                    conn.commit()
-                    c.execute("SELECT id FROM TransactionPlace WHERE id = (SELECT MAX(id) FROM TransactionPlace)")
-                    tt_id = c.fetchall()[0][0]
-                    print "\nnew type\n"
-                    break
 
-            # Adds transaction to database
-            c.execute("INSERT INTO TransactionPlace(tt_id, description) VALUES(?,?)", (tt_id, des, ))
-            conn.commit()
-            c.execute("SELECT id FROM TransactionPlace WHERE id = (SELECT MAX(id) FROM TransactionPlace)")
-            tp_id = c.fetchall()[0][0]
-            c.execute('''INSERT INTO TransactionInfo(tt_id, tp_id, date, amount, balance)
-                                VALUES(?,?,?,?,?)''', (tt_id, tp_id, dt, amo, bal,))
-            conn.commit()
+                # Adds transaction to database
+                c.execute("INSERT INTO TransactionPlace(tt_id, description) VALUES(?,?)", (tt_id, des,))
+                conn.commit()
+                c.execute("SELECT id FROM TransactionPlace WHERE id = (SELECT MAX(id) FROM TransactionPlace)")
+                tp_id = c.fetchall()[0][0]
+                c.execute('''INSERT INTO TransactionInfo(tt_id, tp_id, date, amount, balance)
+                                    VALUES(?,?,?,?,?)''', (tt_id, tp_id, dt, amo, bal,))
+                conn.commit()
 
 
         else:
