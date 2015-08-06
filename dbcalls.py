@@ -61,7 +61,7 @@ def add_default_tt():
     :return:
     """
     d_tt = ["Supermarket", "ATM", "Kiosk", "Shopping", "Night Out", "Transport", "Money In",
-            "House"]  # List of default transaction types
+            "House", "Misc"]  # List of default transaction types
     conn = connect()
     c = conn.cursor()
 
@@ -75,7 +75,7 @@ def add_default_tt():
 
 def add2db(trans_list):
     """
-    Add info into db
+    Adds info into db. Checks to see if transaction already exists.
     :param trans_list: List of transaction data
     :return:
     """
@@ -88,37 +88,70 @@ def add2db(trans_list):
         des = trans_list[i][1]
         amo = trans_list[i][3]
         bal = trans_list[i][4]
-        dt = trans_list[i][5]
+        dt = trans_list[i][5].isoformat()
 
+        # Check if a similar transaction has happened before
         c.execute("SELECT * FROM TransactionPlace WHERE description = (?) LIMIT 1", (des,))
-
         tp_return = c.fetchall()
 
-
         if len(tp_return) == 0:
-            print "No description match for %s" % des
-        else:
-            tt_id = tp_return[0][1]
-            print "Match\n", tt_id
+            # No similar transaction
+            print "\nNo description match for: %s" % des
+            # Need user to add transaction type
+            c.execute("SELECT * FROM TransactionType")
+            tt_in_db = c.fetchall()
 
-            # check if transaction exists
+            print "System does not know what type of transaction this is. Here are the current types:"
+
+            # User picks existing type of transaction or adds new type
+            while True:
+                user_type = raw_input("\nPlease choose corresponding number or add new type name: ")
+                try:
+                    tt_num = int(user_type)
+                    if tt_num <= tt_in_db[-1][0] and tt_num > 0:
+                        tt_id = tt_num
+                        break
+                    else:
+                        print "Incorrect number input"
+                except ValueError as e:
+                    c.execute("INSERT INTO TransactionType(type) VALUES(?)", (user_type, ))
+                    conn.commit()
+                    c.execute("SELECT id FROM TransactionPlace WHERE id = (SELECT MAX(id) FROM TransactionPlace)")
+                    tt_id = c.fetchall()[0][0]
+                    print "\nnew type\n"
+                    break
+
+            # Adds transaction to database
+            c.execute("INSERT INTO TransactionPlace(tt_id, description) VALUES(?,?)", (tt_id, des, ))
+            conn.commit()
+            c.execute("SELECT id FROM TransactionPlace WHERE id = (SELECT MAX(id) FROM TransactionPlace)")
+            tp_id = c.fetchall()[0][0]
+            c.execute('''INSERT INTO TransactionInfo(tt_id, tp_id, date, amount, balance)
+                                VALUES(?,?,?,?,?)''', (tt_id, tp_id, dt, amo, bal,))
+            conn.commit()
+
+
+        else:
+            # Similar transaction exists
+            tp_id = tp_return[0][0]
+            tt_id = tp_return[0][1]
+
+            # check if exact transaction exists, so that it doesn't duplicate transaction
 
             c.execute('''SELECT * FROM TransactionInfo
                             WHERE date = (?)
                             AND amount = (?)
-                            AND balance = (?)''', (dt,amo, bal, ))
+                            AND balance = (?)''', (dt, amo, bal,))
 
             ti_return = c.fetchall()
 
             if len(ti_return) == 0:
-                c.execute("INSERT INTO TransactionPlace(tt_id, description) VALUES(?,?)", (tt_id, des, ))
-                conn.commit()
-                c.execute("SELECT id FROM TransactionPlace WHERE id = (SELECT MAX(id) FROM TransactionPlace)")
-                tp_id = c.fetchall()[0][0]
+                # Adds transaction to database
                 c.execute('''INSERT INTO TransactionInfo(tt_id, tp_id, date, amount, balance)
-                                VALUES(?,?,?,?,?)''', (tt_id, tp_id, dt, amo, bal, ))
+                                VALUES(?,?,?,?,?)''', (tt_id, tp_id, dt, amo, bal,))
                 conn.commit()
             else:
+                # Ignores transaction
                 print "Transaction already exists."
 
     conn.close()
