@@ -84,7 +84,7 @@ def add2db(trans_list):
     conn = connect()
     c = conn.cursor()
 
-    for i in range(10):
+    for i in range(nt):
         des = trans_list[i][1]
         amo = trans_list[i][3]
         bal = trans_list[i][4]
@@ -102,7 +102,8 @@ def add2db(trans_list):
             tt_in_db = c.fetchall()
 
             print "System does not know what type of transaction this is. Here are the current types:"
-
+            for i in range(len(tt_in_db)):
+                print tt_in_db[i][0], tt_in_db[i][1]
             # User picks existing type of transaction or adds new type
             while True:
                 user_type = raw_input("\nPlease choose corresponding number or add new type name: ")
