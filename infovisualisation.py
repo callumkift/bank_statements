@@ -38,34 +38,28 @@ def generalview(tt2s):
     mspend = []
     tspend = []
 
-    # mspend = []
-    # tspend = []
-
-
     for key, values in trans_data_dict.iteritems():
         labels.append(key)
         mspend.append(values[0])
         tspend.append(values[1])
 
-        # mspend.append([key, values[0]])
-        # tspend.append([key, values[1]])
+    fig, axarr = plt.subplots(1,2)
 
-    # mspend = 100 * np.array(mspend) / np.sum(mspend)
-    # tspend = 100 * np.array(tspend) / np.sum(tspend)
-    #
-    # for i in range(len(labels)):
-    #     print labels[i], mspend[i], tspend[i]
-    #
-    # plt.pie(mspend, autopct='%1.1f%%', labeldistance=1.50)
-    # plt.legend(loc=1)
-    # plt.axis("equal")
-    # plt.show()
+    ind = np.arange(len(labels))
+    width = 0.8
 
-    fig, ax = plt.subplots()
+    axarr[0].bar(ind, mspend, color="red")
+    axarr[0].set_xticks(ind + (width / 2))
+    axarr[0].set_xticklabels(labels, rotation=45)
+    axarr[0].set_ylabel("Amount Spent DKK")
+    axarr[0].set_title("Monthly Spend")
 
-    ax.bar(np.arange(len(labels)), mspend)
-    ax.set_xticklabels(labels, rotation=90)
-    ax.set_ylabel("Amount Spent DKK")
-    ax.set_title("Monthly Spend")
+    axarr[1].bar(ind, tspend, color="green")
+    axarr[1].set_xticks(ind + (width / 2))
+    axarr[1].set_xticklabels(labels, rotation=45)
+    axarr[1].set_ylabel("Amount Spent DKK")
+    axarr[1].set_title("Total Spend")
+
+    plt.suptitle("Spending Types")
     plt.show()
     return
