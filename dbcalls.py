@@ -177,7 +177,7 @@ def getgeneral(tt2show):
     """
     Collects date, amount and type transaction-info from the DB for the types given in parameter
     :param tt2show: Transaction types to get data for
-    :return: List of all data for each of the given types.
+    :return: Dictionary of all data for non-zero types.
     """
     conn = connect()
     c = conn.cursor()
@@ -194,4 +194,17 @@ def getgeneral(tt2show):
 
         gen_return.append(c.fetchall())
 
-    return gen_return
+    # Puts data into a dictionary
+    datadict = {}
+    for i in range(len(gen_return)):
+        grtt_length = len(gen_return[i])
+        if grtt_length > 0:
+            ddkey = gen_return[i][0][2]
+            ddklist = []
+
+            for j in range(grtt_length):
+                ddklist.append([gen_return[i][j][0], gen_return[i][j][1]])
+
+            datadict[ddkey] = ddklist
+
+    return datadict
