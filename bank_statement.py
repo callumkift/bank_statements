@@ -43,28 +43,4 @@ if __name__ == '__main__':
     cleanlist = dataclean.formatlist(translist)  # Cleans up the transaction data
 
     dbc.add2db(cleanlist)
-
-    # TEST
-
-    # dbname = "TransactionDB.sqlite"
-    # path2dir = "/Users/callumkift/dev_projects/nordea_banking/"
-    # path2db = path2dir + dbname
-    #
-    # conn = sqlite3.connect(path2db)
-    # c = conn.cursor()
-    #
-    # c.execute("SELECT * FROM TransactionInfo")
-    # stuff = c.fetchall()
-    # conn.close()
-    #
-    # stuff_added = len(stuff)
-    #
-    # print "Number of transactions read from CSVs: %d" % len(cleanlist)
-    # print "Number of transactions in DB: %d\n" % stuff_added
-    #
-    # for i in range(stuff_added):
-    #     print stuff[i]
-
-    # tt2show = ["Supermarket", "Kiosk", "Shopping", "Night Out", "Food", "Transport", "House", "Rent and Bills"]
-
     iv.generalview()
