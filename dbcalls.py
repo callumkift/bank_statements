@@ -168,7 +168,30 @@ def add2db(trans_list):
                                 VALUES(?,?,?,?,?)''', (tt_id, tp_id, dt, amo, bal,))
                 conn.commit()
 
-
     conn.close()
 
     return
+
+
+def getgeneral(tt2show):
+    """
+    Collects date, amount and type transaction-info from the DB for the types given in parameter
+    :param tt2show: Transaction types to get data for
+    :return: List of all data for each of the given types.
+    """
+    conn = connect()
+    c = conn.cursor()
+
+    gen_return = []
+
+    for i in range(len(tt2show)):
+
+        c.execute(
+            '''SELECT TransactionInfo.date, TransactionInfo.amount, TransactionType.type
+                FROM TransactionInfo JOIN TransactionType
+                ON TransactionInfo.tt_id = TransactionType.id
+                WHERE TransactionType.type = (?)''', (tt2show[i],))
+
+        gen_return.append(c.fetchall())
+
+    return gen_return
