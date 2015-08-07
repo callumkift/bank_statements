@@ -23,6 +23,8 @@ def findcsvfiles(path2files):
 
         if len(csvfiles) != 0:
             print "check - CSV files returned"
+            for i in range(len(csvfiles)):
+                print "CSV files - %s" % csvfiles[i]
             return csvfiles
         else:
             print "Error - findcsvfiles(path2files): No CSV files found in given directory."

@@ -83,12 +83,11 @@ def add2db(trans_list):
     conn = connect()
     c = conn.cursor()
 
-    for i in range(20):
+    for i in range(nt):
         des = trans_list[i][1]
         amo = trans_list[i][3]
         bal = trans_list[i][4]
         dt = trans_list[i][5].isoformat()
-
 
         # Check if a similar transaction has happened before
         c.execute("SELECT * FROM TransactionPlace WHERE description = (?) LIMIT 1", (des,))
@@ -118,14 +117,14 @@ def add2db(trans_list):
                 tt_in_db = c.fetchall()
 
                 print "System does not know what type of transaction this is. \nHere are the current types:"
-                for i in range(len(tt_in_db)):
-                    print "%2d %s" % (tt_in_db[i][0], tt_in_db[i][1])
+                for j in range(len(tt_in_db)):
+                    print "%2d %s" % (tt_in_db[j][0], tt_in_db[j][1])
                 # User picks existing type of transaction or adds new type
                 while True:
                     user_type = raw_input("\nPlease choose corresponding number or add new type name: ")
                     try:
                         tt_num = int(user_type)
-                        if tt_num <= tt_in_db[-1][0] and tt_num > 0:
+                        if tt_in_db[-1][0] >= tt_num > 0:
                             tt_id = tt_num
                             break
                         else:
@@ -146,7 +145,6 @@ def add2db(trans_list):
                 c.execute('''INSERT INTO TransactionInfo(tt_id, tp_id, date, amount, balance)
                                     VALUES(?,?,?,?,?)''', (tt_id, tp_id, dt, amo, bal,))
                 conn.commit()
-
 
         else:
             # Similar transaction exists
@@ -187,11 +185,9 @@ def getgeneral():
     for i in range(len(tt)):
         tt2show.append(tt[i][0])
 
-    raw_input("wait ...")
     gen_return = []
 
     for i in range(len(tt2show)):
-
         c.execute(
             '''SELECT TransactionInfo.date, TransactionInfo.amount, TransactionType.type
                 FROM TransactionInfo JOIN TransactionType
