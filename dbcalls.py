@@ -173,15 +173,21 @@ def add2db(trans_list):
     return
 
 
-def getgeneral(tt2show):
+def getgeneral():
     """
-    Collects date, amount and type transaction-info from the DB for the types given in parameter
-    :param tt2show: Transaction types to get data for
+    Collects date, amount and type of transaction-info from the DB.
     :return: Dictionary of all data for non-zero types.
     """
     conn = connect()
     c = conn.cursor()
 
+    c.execute("SELECT type FROM TransactionType")
+    tt = c.fetchall()
+    tt2show = []
+    for i in range(len(tt)):
+        tt2show.append(tt[i][0])
+
+    raw_input("wait ...")
     gen_return = []
 
     for i in range(len(tt2show)):
