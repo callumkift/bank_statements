@@ -58,13 +58,13 @@ def generalview():
     axarr[0].set_xticks(ind + (width / 2))
     axarr[0].set_xticklabels(labels, rotation=rot)
     axarr[0].set_ylabel("Amount Spent DKK")
-    axarr[0].set_title("Monthly Spend - (Net In: %.2f DKK)" % (m_in - np.sum(mspend)))
+    axarr[0].set_title("Last Month (%d/%d) \n(Net In: %.2f DKK)" % (lastmonthmonth, lastmonthyear, m_in - np.sum(mspend)))
 
     axarr[1].bar(ind, tspend, color="green")
     axarr[1].set_xticks(ind + (width / 2))
     axarr[1].set_xticklabels(labels, rotation=rot)
     axarr[1].set_ylabel("Amount Spent DKK")
-    axarr[1].set_title("Total Spend - (Net In: %.2f DKK)" % (t_in - np.sum(tspend)))
+    axarr[1].set_title("Total Spend \n(Net In: %.2f DKK)" % (t_in - np.sum(tspend)))
 
     plt.suptitle("Where Money is Spent")
     plt.show()
