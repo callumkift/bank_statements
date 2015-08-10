@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Contains methods that deal with the CSV files and extracting data from it.
+Contains methods that deal with reading files and extracting data from them.
 """
 
 import os

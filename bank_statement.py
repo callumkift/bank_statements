@@ -24,8 +24,8 @@
 # MA 02110-1301, USA.
 #
 
-import readcsv
-import dataclean
+import readfiles as rf
+import dataclean as dclean
 import dbcalls as dbc
 import infovisualisation as iv
 
@@ -37,10 +37,10 @@ if __name__ == '__main__':
 
     dbc.createdb(dtt)
 
-    csvfiles = readcsv.findcsvfiles(path2csv)  # List of paths to CSV files
-    translist = readcsv.readcsvfiles(csvfiles)  # List of transactions from all CSV files
+    csvfiles = rf.findcsvfiles(path2csv)  # List of paths to CSV files
+    translist = rf.readcsvfiles(csvfiles)  # List of transactions from all CSV files
 
-    cleanlist = dataclean.formatlist(translist)  # Cleans up the transaction data
+    cleanlist = dclean.formatlist(translist)  # Cleans up the transaction data
 
     dbc.add2db(cleanlist)
     iv.generalview()
