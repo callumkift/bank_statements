@@ -44,3 +44,4 @@ if __name__ == '__main__':
 
     dbc.add2db(cleanlist)
     iv.generalview()
+    iv.dayview()
