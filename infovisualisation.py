@@ -72,6 +72,10 @@ def generalview():
 
 
 def dayview():
+    """
+    Plots a bar chart showing the spending per type of transaction per day.
+    :return:
+    """
     trans_data_dict = dbc.getgeneral()
 
     # Changes dictionary items to key = [monday_spend, tuesday_spend, wednesday_spend, etc.]
@@ -117,7 +121,6 @@ def dayview():
     count = 0
 
     # Plotting
-    # fig = plt.figure()
     ax = plt.subplot(111)
     for key, values in trans_data_dict.iteritems():
         if key != "Money In":
