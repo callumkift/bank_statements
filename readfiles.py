@@ -40,7 +40,7 @@ def getcsvpath():
             else:
                 "\nError: Invalid path!"
                 pass
-
+    print "Check - path2csv file: %s" %path2csv
     return path2csv
 
 
@@ -136,6 +136,7 @@ def extractdata(csvfile):
             return
     else:
         print "%s -- already read" % csvfile
+        return csvdata_pf
 
 
 def readpastcsv():
