@@ -25,8 +25,7 @@ def getcsvpath():
     else:
         while True:
             user_path = raw_input(
-            "Cannot find the bank statement files.\nPlease write the path to the bank statement (CSV) files:\n")
-
+                "Cannot find the bank statement files.\nPlease write the path to the bank statement (CSV) files:\n")
 
             if os.path.exists(user_path):
                 # Need / to get into the directory later on.

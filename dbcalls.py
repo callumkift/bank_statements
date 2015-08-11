@@ -11,7 +11,7 @@ import readfiles as rf
 def createdb(dtt):
     """
     Creates database and tables if the database does not exist. Creates it in the same place as the bank statement
-    (csv) files exist
+    (csv) files exist as a hidden file
     :param dtt: List of default transaction types
     :return:
     """
