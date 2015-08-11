@@ -103,26 +103,57 @@ def extractdata(csvfile):
     """
 
     csvdata_pf = []
+    csvpastreads = ".pastreadcsv.txt"
+    preread = readpastcsv()
 
-    if os.path.exists(csvfile):
-        with open(csvfile, "r") as f:
-            f.readline()
-            f.readline()
+    if csvfile not in preread:
+        if os.path.exists(csvfile):
+            with open(csvfile, "r") as f:
+                f.readline()
+                f.readline()
+                for line in f:
+                    line = line.strip()
+                    column = line.split(";")
+                    if len(column) == 5:
+                        csvdata_pf.append([column[0], column[1], column[2], float(string.replace(column[3], ",", ".")),
+                                           float(string.replace(column[4], ",", "."))])
+                        # column[0] date transaction was recorded
+                        # column[1] merchant information
+                        # column[2] date transaction cleared
+                        # column[3] transaction sum
+                        # column[4] balance of account
+                    else:
+                        print "Error - extractdata(csvfile): Wrong number of columns. Check file format."
+            print "check - read and put in list"
+
+            with open(csvpastreads, "a") as cpr:
+                cpr.write(csvfile + "\n")
+                cpr.close()
+                print "Written %s to readfile" % csvfile
+            return csvdata_pf
+        else:
+            print "Error - extractdata(csvfile): Cannot find CSV file."
+            return
+    else:
+        print "%s -- already read" % csvfile
+
+
+def readpastcsv():
+    """
+    Reads from file the previously read CSV files.
+    :return: List of previously read csv files
+    """
+    csvpastreads = ".pastreadcsv.txt"
+    readcsvs = []
+
+    if os.path.exists(csvpastreads):
+        with open(csvpastreads, "r") as f:
             for line in f:
                 line = line.strip()
-                column = line.split(";")
-                if len(column) == 5:
-                    csvdata_pf.append([column[0], column[1], column[2], float(string.replace(column[3], ",", ".")),
-                                       float(string.replace(column[4], ",", "."))])
-                    # column[0] date transaction was recorded
-                    # column[1] merchant information
-                    # column[2] date transaction cleared
-                    # column[3] transaction sum
-                    # column[4] balance of account
-                else:
-                    print "Error - extractdata(csvfile): Wrong number of columns. Check file format."
-        print "check - read and put in list"
-        return csvdata_pf
+                readcsvs.append(line)
     else:
-        print "Error - extractdata(csvfile): Cannot find CSV file."
-        return
+        with open(csvpastreads, "w") as f:
+            f.close()
+            print "%s -- created" % csvpastreads
+
+    return readcsvs
