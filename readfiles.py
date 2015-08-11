@@ -80,15 +80,20 @@ def readcsvfiles(csvlist):
     """
 
     csvdata = []
+    prev_read = readpastcsv()
 
     if len(csvlist) != 0:
         for i in range(len(csvlist)):
             print "check - ", csvlist[i]
-            edl = extractdata(csvlist[i])
+            # Only extracts data from files that have not been previously read.
+            if csvlist[i] not in prev_read:
+                edl = extractdata(csvlist[i])
 
-            # puts csvdata into a list of transactions
-            for j in range(len(edl)):
-                csvdata.append(edl[j])
+                # puts csvdata into a list of transactions
+                for j in range(len(edl)):
+                    csvdata.append(edl[j])
+            else:
+                print "%s -- previously read" % csvlist[i]
 
         return csvdata
     else:
@@ -105,39 +110,33 @@ def extractdata(csvfile):
 
     csvdata_pf = []
     csvpastreads = ".pastreadcsv.txt"
-    preread = readpastcsv()
 
-    # Ignores previously read csv files
-    if csvfile not in preread:
-        if os.path.exists(csvfile):
-            with open(csvfile, "r") as f:
-                f.readline()
-                f.readline()
-                for line in f:
-                    line = line.strip()
-                    column = line.split(";")
-                    if len(column) == 5:
-                        csvdata_pf.append([column[0], column[1], column[2], float(string.replace(column[3], ",", ".")),
-                                           float(string.replace(column[4], ",", "."))])
-                        # column[0] date transaction was recorded
-                        # column[1] merchant information
-                        # column[2] date transaction cleared
-                        # column[3] transaction sum
-                        # column[4] balance of account
-                    else:
-                        print "\nError - extractdata(csvfile): Wrong number of columns. Check file format.\n"
-            print "check - read and put in list"
+    if os.path.exists(csvfile):
+        with open(csvfile, "r") as f:
+            f.readline()
+            f.readline()
+            for line in f:
+                line = line.strip()
+                column = line.split(";")
+                if len(column) == 5:
+                    csvdata_pf.append([column[0], column[1], column[2], float(string.replace(column[3], ",", ".")),
+                                       float(string.replace(column[4], ",", "."))])
+                    # column[0] date transaction was recorded
+                    # column[1] merchant information
+                    # column[2] date transaction cleared
+                    # column[3] transaction sum
+                    # column[4] balance of account
+                else:
+                    print "\nError - extractdata(csvfile): Wrong number of columns. Check file format.\n"
+        print "check - read and put in list"
 
-            with open(csvpastreads, "a") as cpr:
-                cpr.write(csvfile + "\n")
-                cpr.close()
-                print "Written %s to readfile" % csvfile
-            return csvdata_pf
-        else:
-            print "\nError - extractdata(csvfile): Cannot find CSV file.\n"
-            return
+        with open(csvpastreads, "a") as cpr:
+            cpr.write(csvfile + "\n")
+            cpr.close()
+            print "Written %s to readfile" % csvfile
+        return csvdata_pf
     else:
-        print "%s -- already read" % csvfile
+        print "\nError - extractdata(csvfile): Cannot find CSV file.\n"
         return csvdata_pf
 
 
