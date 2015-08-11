@@ -14,25 +14,29 @@ def formatlist(form_list):
     :param form_list: A list of transactions.
     :return: The transaction list with cleaned up data.
     """
-
+    # print len(form_list)
     res_elements = []
     reserved = "Reserveret"
 
     for i in range(len(form_list)):
-        # Identifies reserved transactions
-        if form_list[i][0] == reserved:
-            res_elements.append(i)
-        else:
-            formatdate(form_list[i])
-            acttranstime(form_list[i])
-            cleandescription(form_list[i])
+        for j in range(len(form_list[i])):
+            # Identifies reserved transactions
+            if form_list[i][j][0] == reserved:
+                res_elements.append([i, j])
+            else:
+                formatdate(form_list[i][j])
+                acttranstime(form_list[i][j])
+                cleandescription(form_list[i][j])
 
     res_elements.reverse()
     # Reversed so that it deletes the correct elements
 
     # Removes reserved transactions
-    for j in range(len(res_elements)):
-        del form_list[res_elements[j]]
+    for k in range(len(res_elements)):
+        del form_list[res_elements[k][0]][res_elements[k][1]]
+
+    # Flatten list of lists
+    form_list = [item for sublist in form_list for item in sublist]
 
     return form_list
 

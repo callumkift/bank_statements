@@ -87,11 +87,7 @@ def readcsvfiles(csvlist):
             print "check - ", csvlist[i]
             # Only extracts data from files that have not been previously read.
             if csvlist[i] not in prev_read:
-                edl = extractdata(csvlist[i])
-
-                # puts csvdata into a list of transactions
-                for j in range(len(edl)):
-                    csvdata.append(edl[j])
+                csvdata.append(extractdata(csvlist[i]))
             else:
                 print "%s -- previously read" % csvlist[i]
 
