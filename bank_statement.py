@@ -30,16 +30,14 @@ import dbcalls as dbc
 import infovisualisation as iv
 
 if __name__ == '__main__':
-    path2csv = "/Users/callumkift/dev_projects/"
-
-    dtt = ["Supermarket", "ATM", "Kiosk", "Shopping", "Night Out", "Food", "Transport", "Money In",
+    path2csv = rf.getcsvpath()
+    dtt = ["Supermarket", "ATM", "Kiosk", "Shopping", "Night Out", "Eating Out", "Transport", "Money In",
            "House", "Rent and Bills", "Hobbies", "Misc"]  # List of default transaction types
 
     dbc.createdb(dtt)
 
     csvfiles = rf.findcsvfiles(path2csv)  # List of paths to CSV files
     translist = rf.readcsvfiles(csvfiles)  # List of transactions from all CSV files
-
     cleanlist = dclean.formatlist(translist)  # Cleans up the transaction data
 
     dbc.add2db(cleanlist)
