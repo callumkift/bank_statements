@@ -7,6 +7,44 @@ import os
 import string
 
 
+def getcsvpath():
+    """
+    Reads .path2csv.txt to get the location of the transaction (csv) files are
+    :return: Path to the CSV files (string)
+    """
+    csvpathfile = ".path2csv.txt"
+    path2csv = ""
+
+    if os.path.exists(csvpathfile):
+        with open(csvpathfile, "r") as f:
+            for line in f:
+                line = line.strip()
+                path2csv = line
+        f.close()
+
+    else:
+        while True:
+            user_path = raw_input(
+            "Cannot find the bank statement files.\nPlease write the path to the bank statement (CSV) files:\n")
+
+
+            if os.path.exists(user_path):
+                # Need / to get into the directory later on.
+                if user_path[-1] != "/":
+                    user_path += "/"
+                    path2csv = user_path
+
+                    with open(csvpathfile, "w") as f:
+                        f.write(path2csv)
+                        f.close()
+                break
+            else:
+                "\nError: Invalid path!"
+                pass
+
+    return path2csv
+
+
 def findcsvfiles(path2files):
     """
     Method finds the CSV files to read and extract data.

@@ -30,7 +30,8 @@ import dbcalls as dbc
 import infovisualisation as iv
 
 if __name__ == '__main__':
-    path2csv = "/Users/callumkift/dev_projects/"
+
+    path2csv = rf.getcsvpath()
 
     dtt = ["Supermarket", "ATM", "Kiosk", "Shopping", "Night Out", "Food", "Transport", "Money In",
            "House", "Rent and Bills", "Hobbies", "Misc"]  # List of default transaction types

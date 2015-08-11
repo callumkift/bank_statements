@@ -5,16 +5,18 @@ Contains methods that calls and connects to the database.
 
 import sqlite3
 import os
+import readfiles as rf
 
 
 def createdb(dtt):
     """
-    Creates database and tables if the database does not exist.
+    Creates database and tables if the database does not exist. Creates it in the same place as the bank statement
+    (csv) files exist
     :param dtt: List of default transaction types
     :return:
     """
-    dbname = "TransactionDB.sqlite"
-    path2dir = "/Users/callumkift/dev_projects/nordea_banking/"
+    dbname = ".TransactionDB.sqlite"
+    path2dir = rf.getcsvpath()
     path2db = path2dir + dbname
 
     if os.path.exists(path2db):
@@ -48,8 +50,8 @@ def connect():
     Connects to database
     :return: connection to sqlite database
     """
-    dbname = "TransactionDB.sqlite"
-    path2dir = "/Users/callumkift/dev_projects/nordea_banking/"
+    dbname = ".TransactionDB.sqlite"
+    path2dir = rf.getcsvpath()
     path2db = path2dir + dbname
 
     return sqlite3.connect(path2db)
