@@ -23,6 +23,7 @@ def getcsvpath():
         f.close()
 
     else:
+        # Loop until given valid path
         while True:
             user_path = raw_input(
                 "Cannot find the bank statement files.\nPlease write the path to the bank statement (CSV) files:\n")
@@ -38,9 +39,9 @@ def getcsvpath():
                         f.close()
                 break
             else:
-                "\nError: Invalid path!"
+                "\nError: Invalid path!\n"
                 pass
-    print "Check - path2csv file: %s" %path2csv
+    print "Check - path2csv file: %s" % path2csv
     return path2csv
 
 
@@ -59,16 +60,16 @@ def findcsvfiles(path2files):
                 csvfiles.append(path2files + str(file))
 
         if len(csvfiles) != 0:
-            print "check - CSV files returned"
             for i in range(len(csvfiles)):
                 print "CSV files - %s" % csvfiles[i]
+            print "check - CSV files returned"
             return csvfiles
         else:
-            print "Error - findcsvfiles(path2files): No CSV files found in given directory."
+            print "\nError - findcsvfiles(path2files): No CSV files found in given directory.\n"
             return
     else:
-        print "Error - findcsvfiles(path2files): Directory does not exist."
-        return
+        print "\nError - findcsvfiles(path2files): Directory does not exist.\n"
+        return csvfiles
 
 
 def readcsvfiles(csvlist):
@@ -91,8 +92,8 @@ def readcsvfiles(csvlist):
 
         return csvdata
     else:
-        print "Error - readcsvfiles(csvlist): No CSV files in list. Are there CSV files in given directory?"
-        return
+        print "\nError - readcsvfiles(csvlist): No CSV files in list. Are there CSV files in given directory?\n"
+        return csvdata
 
 
 def extractdata(csvfile):
@@ -106,6 +107,7 @@ def extractdata(csvfile):
     csvpastreads = ".pastreadcsv.txt"
     preread = readpastcsv()
 
+    # Ignores previously read csv files
     if csvfile not in preread:
         if os.path.exists(csvfile):
             with open(csvfile, "r") as f:
@@ -123,7 +125,7 @@ def extractdata(csvfile):
                         # column[3] transaction sum
                         # column[4] balance of account
                     else:
-                        print "Error - extractdata(csvfile): Wrong number of columns. Check file format."
+                        print "\nError - extractdata(csvfile): Wrong number of columns. Check file format.\n"
             print "check - read and put in list"
 
             with open(csvpastreads, "a") as cpr:
@@ -132,7 +134,7 @@ def extractdata(csvfile):
                 print "Written %s to readfile" % csvfile
             return csvdata_pf
         else:
-            print "Error - extractdata(csvfile): Cannot find CSV file."
+            print "\nError - extractdata(csvfile): Cannot find CSV file.\n"
             return
     else:
         print "%s -- already read" % csvfile
@@ -153,6 +155,7 @@ def readpastcsv():
                 line = line.strip()
                 readcsvs.append(line)
     else:
+        # creates empty file
         with open(csvpastreads, "w") as f:
             f.close()
             print "%s -- created" % csvpastreads
