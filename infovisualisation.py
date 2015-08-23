@@ -91,7 +91,7 @@ def generalview():
     axarr[1].set_xticks(ind + (width / 2))
     axarr[1].set_xticklabels(labels, rotation=rot)
     axarr[1].set_ylabel("Amount Spent DKK")
-    axarr[1].set_title("Total Spend \n(Net In: %.2f DKK)" % (t_in - np.sum(tspend)))
+    axarr[1].set_title("Total Spending \n(Net In: %.2f DKK)" % (t_in - np.sum(tspend)))
 
     plt.suptitle("Where Money is Spent")
     plt.show()
