@@ -18,7 +18,7 @@ def generalview():
 
     trans_data_dict = dbc.getgeneral()
 
-    # Changes dictionary items to key = [last month amount, total amount]
+    # Changes dictionary items to key = [last month amount, total amount, mean amount per month, std per month]
     for key, value in trans_data_dict.iteritems():
         vdate, vamount = zip(*value)
         total_amount = np.sum(vamount)
@@ -53,6 +53,8 @@ def generalview():
     labels = []
     mspend = []
     tspend = []
+    mean_spend = []
+    std_ms = []
 
     m_in = 0
     t_in = 0
@@ -62,6 +64,8 @@ def generalview():
             labels.append(key)
             mspend.append(values[0])
             tspend.append(values[1])
+            mean_spend.append(values[2])
+            std_ms.append(values[3])
         else:
             m_in = values[0]
             t_in = values[1]
@@ -73,6 +77,7 @@ def generalview():
     rot = 75  # Angle of text (x-axis)
 
     axarr[0].bar(ind, mspend, color="red")
+    axarr[0].errorbar(ind + (width / 2), mean_spend, yerr=std_ms, fmt="o")
     axarr[0].set_xticks(ind + (width / 2))
     axarr[0].set_xticklabels(labels, rotation=rot)
     axarr[0].set_ylabel("Amount Spent DKK")
