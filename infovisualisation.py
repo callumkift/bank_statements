@@ -38,16 +38,15 @@ def generalview():
                 my_amounts.append(vamount[i])
             else:
                 my_ind = my_array.index(monyear_string)
-                print my_ind
-                my_amounts[my_ind] += abs(vamount[i])
+                my_amounts[my_ind] += vamount[i]
 
             if dmonth == lastmonthmonth and dyear == lastmonthyear:
                 month_amount += vamount[i]
 
         mean_pm = np.mean(my_amounts)
-        std_pm = np.std(my_amounts)
+        std_pm = np.std(my_amounts) / len(my_amounts)
 
-        trans_data_dict[key] = [abs(month_amount), abs(total_amount), mean_pm, std_pm]
+        trans_data_dict[key] = [abs(month_amount), abs(total_amount), abs(mean_pm), std_pm]
 
     # Making Bar Chart
     labels = []
@@ -82,7 +81,7 @@ def generalview():
     axarr[0].set_xticklabels(labels, rotation=rot)
     axarr[0].set_ylabel("Amount Spent DKK")
     axarr[0].set_title(
-        "Last Month (%d/%d) \n(Net In: %.2f DKK)" % (lastmonthmonth, lastmonthyear, m_in - np.sum(mspend)))
+        "Last Month (%d/%d) Compared to Mean\n(Net In: %.2f DKK)" % (lastmonthmonth, lastmonthyear, m_in - np.sum(mspend)))
 
     axarr[1].bar(ind, tspend, color="green")
     axarr[1].set_xticks(ind + (width / 2))
