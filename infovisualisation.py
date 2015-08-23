@@ -33,6 +33,7 @@ def generalview():
             dyear = date.year
             monyear_string = str(dmonth) + str(dyear)
 
+            # Sums for each month -> find mean spend per month.
             if monyear_string not in my_array:
                 my_array.append(monyear_string)
                 my_amounts.append(vamount[i])
@@ -40,23 +41,25 @@ def generalview():
                 my_ind = my_array.index(monyear_string)
                 my_amounts[my_ind] += vamount[i]
 
+            # Sums spending for last month
             if dmonth == lastmonthmonth and dyear == lastmonthyear:
                 month_amount += vamount[i]
 
         mean_pm = np.mean(my_amounts)
-        std_pm = np.std(my_amounts) / len(my_amounts)
+        me_pm = np.std(my_amounts) / len(my_amounts)
 
-        trans_data_dict[key] = [abs(month_amount), abs(total_amount), abs(mean_pm), std_pm]
+        trans_data_dict[key] = [abs(month_amount), abs(total_amount), abs(mean_pm), me_pm]
 
     # Making Bar Chart
-    labels = []
-    mspend = []
-    tspend = []
-    mean_spend = []
-    std_ms = []
+    labels = []  # list of all keys
+    mspend = []  # list of monthly spend for each key
+    tspend = []  # list of total spend for each key
 
-    m_in = 0
-    t_in = 0
+    mean_spend = []  # list of mean monthly spend for each key
+    me_ms = []  # list of error on mean
+
+    m_in = 0  # monthly money in
+    t_in = 0  # total money in
 
     for key, values in trans_data_dict.iteritems():
         if key != "Money In":
@@ -64,24 +67,25 @@ def generalview():
             mspend.append(values[0])
             tspend.append(values[1])
             mean_spend.append(values[2])
-            std_ms.append(values[3])
+            me_ms.append(values[3])
         else:
             m_in = values[0]
             t_in = values[1]
 
     fig, axarr = plt.subplots(1, 2)
 
-    ind = np.arange(len(labels))
+    ind = np.arange(len(labels))  # index for each label
     width = 0.8  # width of bar
     rot = 75  # Angle of text (x-axis)
 
     axarr[0].bar(ind, mspend, color="red")
-    axarr[0].errorbar(ind + (width / 2), mean_spend, yerr=std_ms, fmt="o")
+    axarr[0].errorbar(ind + (width / 2), mean_spend, yerr=me_ms, fmt="o")
     axarr[0].set_xticks(ind + (width / 2))
     axarr[0].set_xticklabels(labels, rotation=rot)
     axarr[0].set_ylabel("Amount Spent DKK")
     axarr[0].set_title(
-        "Last Month (%d/%d) Compared to Mean\n(Net In: %.2f DKK)" % (lastmonthmonth, lastmonthyear, m_in - np.sum(mspend)))
+        "Last Month (%d/%d) - Compared to Mean\n(Net In: %.2f DKK)" % (
+            lastmonthmonth, lastmonthyear, m_in - np.sum(mspend)))
 
     axarr[1].bar(ind, tspend, color="green")
     axarr[1].set_xticks(ind + (width / 2))
@@ -160,6 +164,7 @@ def dayview():
     box = ax.get_position()
     ax.set_position([box.x0, box.y0, box.width * 0.95, box.height])
     plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+    plt.grid(b=True, which="major")
 
     plt.show()
 
