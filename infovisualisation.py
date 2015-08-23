@@ -24,12 +24,30 @@ def generalview():
         total_amount = np.sum(vamount)
         month_amount = 0
 
+        my_array = []
+        my_amounts = []
+
         for i in range(len(vdate)):
             date = dt.datetime.strptime(vdate[i], "%Y-%m-%dT%H:%M:%S")
-            if date.month == lastmonthmonth and date.year == lastmonthyear:
+            dmonth = date.month
+            dyear = date.year
+            monyear_string = str(dmonth) + str(dyear)
+
+            if monyear_string not in my_array:
+                my_array.append(monyear_string)
+                my_amounts.append(vamount[i])
+            else:
+                my_ind = my_array.index(monyear_string)
+                print my_ind
+                my_amounts[my_ind] += abs(vamount[i])
+
+            if dmonth == lastmonthmonth and dyear == lastmonthyear:
                 month_amount += vamount[i]
 
-        trans_data_dict[key] = [abs(month_amount), abs(total_amount)]
+        mean_pm = np.mean(my_amounts)
+        std_pm = np.std(my_amounts)
+
+        trans_data_dict[key] = [abs(month_amount), abs(total_amount), mean_pm, std_pm]
 
     # Making Bar Chart
     labels = []
